@@ -1,21 +1,23 @@
 const express = require('express');
+const serverless = require('serverless-http');
+
 const app = express();
+const router = express.Router();
 
 // Middleware
 app.use(express.json());
 
-// Dummy Route
-app.get('/', (req, res) => {
+// Routes
+router.get('/', (req, res) => {
   res.send('Hello from Express on Vercel!');
 });
 
-// Another route
-app.get('/api/hello', (req, res) => {
+router.get('/api/hello', (req, res) => {
   res.json({ message: 'Hello API from Vercel Function' });
 });
 
-// Export handler
-module.exports = app;
-module.exports.handler = (req, res) => {
-  app(req, res);
-};
+// Mount router
+app.use('/', router);
+
+// Export as a serverless function
+module.exports.handler = serverless(app);
